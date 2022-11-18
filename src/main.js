@@ -8,14 +8,14 @@ document.querySelector('.cep-button').addEventListener('click', searchCep);
 const productsList = document.querySelector('.products');
 
 const startLogin = (elemento) => {
-  const runLogin = document.createElement('runLogin');
+  const runLogin = document.createElement('div');
   runLogin.innerHTML = 'carregando...';
   runLogin.className = 'loading';
   elemento.appendChild(runLogin);
 };
 
 const endLogin = (elemento) => {
-  const erroLogin = document.createElement('erroLogin');
+  const erroLogin = document.createElement('div');
   erroLogin.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
   erroLogin.className = 'error';
   elemento.appendChild(erroLogin);
@@ -27,7 +27,6 @@ const injectProducts = async (elemento) => {
     data.forEach((product) => {
       const element = createProductElement(product);
       elemento.appendChild(element);
-      console.log(injectProducts());
     });
   } catch (error) {
     endLogin(elemento);
@@ -35,8 +34,8 @@ const injectProducts = async (elemento) => {
 };
 
 const removeLog = () => {
-  const p = document.querySelector('.loading');
-  p.remove();
+  const div = document.querySelector('.loading');
+  div.remove();
 };
 
 window.onload = () => {
