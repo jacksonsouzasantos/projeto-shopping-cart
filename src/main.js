@@ -46,7 +46,7 @@ const injectProducts = async (elemento) => {
       const element = createProductElement(product);
       elemento.appendChild(element);
     });
-  } catch (error) {
+  } catch {
     displayMessageElement(
       'error',
       'Algum erro ocorreu, recarregue a página e tente novamente',
