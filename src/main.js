@@ -7,18 +7,36 @@ document.querySelector('.cep-button').addEventListener('click', searchCep);
 
 const productsList = document.querySelector('.products');
 
-const startLogin = (elemento) => {
-  const runLogin = document.createElement('div');
-  runLogin.innerHTML = 'carregando...';
-  runLogin.className = 'loading';
-  elemento.appendChild(runLogin);
+const displayMessageElement = (className, message) => {
+  const productsParentSection = document.querySelector('.products');
+  const loadingSpan = document.createElement('span');
+  loadingSpan.className = className;
+  loadingSpan.textContent = message;
+  productsParentSection.appendChild(loadingSpan);
 };
 
-const endLogin = (elemento) => {
-  const erroLogin = document.createElement('div');
-  erroLogin.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
-  erroLogin.className = 'error';
-  elemento.appendChild(erroLogin);
+const removeLoadingMessage = () => {
+  const loadingSpan = document.querySelector('.loading');
+  loadingSpan.remove();
+};
+
+const createMessageLogin = async () => {
+  try {
+    displayMessageElement('loading', 'carregando...');
+    const computerProducts = await fetchProductsList('computador');
+    removeLoadingMessage();
+    createProductsFromArray(computerProducts);
+  } catch {
+    displayMessageElement(
+      'error',
+      'Algum erro ocorreu, recarregue a página e tente novamente',
+    );
+  }
+};
+
+const startLogin = (elemento) => {
+  const runLogin = document.createElement('div');
+  elemento.appendChild(runLogin);
 };
 
 const injectProducts = async (elemento) => {
@@ -29,17 +47,15 @@ const injectProducts = async (elemento) => {
       elemento.appendChild(element);
     });
   } catch (error) {
-    endLogin(elemento);
+    displayMessageElement(
+      'error',
+      'Algum erro ocorreu, recarregue a página e tente novamente',
+    );
   }
-};
-
-const removeLog = () => {
-  const div = document.querySelector('.loading');
-  div.remove();
 };
 
 window.onload = () => {
   startLogin(productsList);
   injectProducts(productsList);
-  removeLog();
+  createMessageLogin();
 };

@@ -25,6 +25,6 @@ describe('Teste a função fetchProduct', () => {
   });
 
   it('Chamada sem argumento lança um erro', async () => {
-    expect(await fetchProduct).rejects.toThrow(new Error('ID não informado'));
+    await expect(fetchProduct).rejects.toThrow('ID não informado');
   });
 });
