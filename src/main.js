@@ -1,61 +1,57 @@
 import { searchCep } from './helpers/cepFunctions';
-import { createProductElement } from './helpers/shopFunctions';
-import { fetchProductsList } from './helpers/fetchFunctions';
+import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
+import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
+import { saveCartID } from './helpers/cartFunctions';
 import './style.css';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 
 const productsList = document.querySelector('.products');
 
-const displayMessageElement = (className, message) => {
-  const productsParentSection = document.querySelector('.products');
-  const loadingSpan = document.createElement('span');
-  loadingSpan.className = className;
-  loadingSpan.textContent = message;
-  productsParentSection.appendChild(loadingSpan);
+const messageLogin = () => {
+  const espera = document.createElement('div');
+  espera.className = 'loading';
+  espera.innerHTML = 'carregando...';
+  productsList.appendChild(espera);
 };
 
-const removeLoadingMessage = () => {
-  const loadingSpan = document.querySelector('.loading');
-  loadingSpan.remove();
+const messageErro = () => {
+  const erro = document.createElement('div');
+  erro.className = 'error';
+  erro.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
+  productsList.appendChild(erro);
 };
 
-const createMessageLogin = async () => {
+const productList = async () => {
+  messageLogin();
   try {
-    displayMessageElement('loading', 'carregando...');
-    const computerProducts = await fetchProductsList('computador');
-    removeLoadingMessage();
-    createProductsFromArray(computerProducts);
-  } catch {
-    displayMessageElement(
-      'error',
-      'Algum erro ocorreu, recarregue a página e tente novamente',
-    );
-  }
-};
-
-const startLogin = (elemento) => {
-  const runLogin = document.createElement('div');
-  elemento.appendChild(runLogin);
-};
-
-const injectProducts = async (elemento) => {
-  try {
-    const data = await fetchProductsList('computador');
-    data.forEach((product) => {
-      const element = createProductElement(product);
-      elemento.appendChild(element);
+    const produtos = await fetchProductsList('computador');
+    productsList.innerHTML = '';
+    produtos.forEach((produtoSearch) => {
+      productsList.appendChild(createProductElement(produtoSearch));
     });
-  } catch {
-    displayMessageElement(
-      'error',
-      'Algum erro ocorreu, recarregue a página e tente novamente',
-    );
+  } catch (error) {
+    productsList.innerHTML = '';
+    messageErro();
   }
 };
+
+const addToCartBtn = document.querySelectorAll('.product__add');
+const cartList = document.querySelector('.cart__products');
+
+const addToCart = async (element) => {
+  const { target } = element;
+  const id = target.parentElement.firstChild.innerHTML;
+
+  saveCartID(id);
+
+  const productData = await fetchProduct(id);
+  const cartProduct = createCartProductElement(productData);
+  cartList.appendChild(cartProduct);
+};
+
+addToCartBtn.forEach((element) => element.addEventListener('click', addToCart));
 
 window.onload = () => {
-  startLogin(productsList);
-  injectProducts(productsList);
-  createMessageLogin();
+  productList();
 };
