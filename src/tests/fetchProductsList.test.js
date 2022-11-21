@@ -19,11 +19,6 @@ describe('Teste a função fetchProductsList', () => {
     expect(fetch).toBeCalledWith(getUrl);
   });
 
-  it('função com estrutura de dados igual ao objeto computadorSearch', async () => {
-    const fetch = await fetchProductsList('computador');
-    expect(fetch).toEqual(computadorSearch);
-  });
-
   it('Ao chamar a função fetchProductsList sem argumento, retorna um erro', async () => {
     const erro = 'Termo de busca não informado';
     await expect(fetchProductsList()).rejects.toThrow(erro);
