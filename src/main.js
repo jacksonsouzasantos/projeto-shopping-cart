@@ -1,12 +1,14 @@
 import { searchCep } from './helpers/cepFunctions';
 import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
-import { saveCartID } from './helpers/cartFunctions';
+import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 import './style.css';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 
 const productsList = document.querySelector('.products');
+const buttonAddCar = document.querySelector('.products');
+const cartList = document.querySelector('.cart__products');
 
 const messageLogin = () => {
   const espera = document.createElement('div');
@@ -36,22 +38,25 @@ const productList = async () => {
   }
 };
 
-const addToCartBtn = document.querySelectorAll('.product__add');
-const cartList = document.querySelector('.cart__products');
-
-const addToCart = async (element) => {
+const addCart = async (element) => {
   const { target } = element;
-  const id = target.parentElement.firstChild.innerHTML;
-
-  saveCartID(id);
-
-  const productData = await fetchProduct(id);
-  const cartProduct = createCartProductElement(productData);
-  cartList.appendChild(cartProduct);
+  const idProductCart = target.parentElement.firstChild.textContent;
+  const product = await fetchProduct(idProductCart);
+  cartList.appendChild(createCartProductElement(product));
+  saveCartID(idProductCart);
 };
 
-addToCartBtn.forEach((element) => element.addEventListener('click', addToCart));
+buttonAddCar.addEventListener('click', addCart);
 
+function recoverCart() {
+  const storage = getSavedCartIDs();
+  storage.forEach(async (ids) => {
+    const product = await fetchProduct(ids);
+    const listCartStorege = createCartProductElement(product);
+    cartList.appendChild(listCartStorege);
+  });
+}
 window.onload = () => {
   productList();
+  recoverCart();
 };
