@@ -2,7 +2,6 @@ import './mocks/fetchSimulator';
 import { fetchProduct } from '../helpers/fetchFunctions';
 import product from './mocks/product';
 
-// implemente seus testes aqui
 describe('Teste a função fetchProduct', () => {
   it('testa se fetchProduct é uma função', () => {
     expect(typeof fetchProduct).toBe('function');
@@ -10,7 +9,7 @@ describe('Teste a função fetchProduct', () => {
 
   it('testa se a execução do fetch é chamado', async () => {
     await fetchProduct('MLB1405519561');
-    expect(fetch).toHaveBeenCalled();
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it('testa se fetch foi chamado com argumento correto', async () => {
@@ -19,12 +18,11 @@ describe('Teste a função fetchProduct', () => {
     expect(fetch).toHaveBeenCalledWith(expectedEndpoint);
   });
 
-  it('testa se retorna o valor esperado', async () => {
-    const response = await fetchProduct('MLB1405519561');
-    expect(response).toEqual(product);
+  it('Testa o retorno de fetchProduct com argumento recebido é igual ao objeto', async () => {
+    await expect (fetchProduct('MLB1405519561')).resolves.toEqual(product);
   });
 
-  it('Chamada sem argumento lança um erro', async () => {
-    await expect(fetchProduct).rejects.toThrow('ID não informado');
+  it('Chamar função sem argumento retorna menssagem de erro', () => {
+   expect(fetchProduct()).rejects.toEqual(new Error('ID não informado'));
   });
 });
