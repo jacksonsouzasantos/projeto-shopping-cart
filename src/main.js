@@ -46,8 +46,6 @@ const addCart = async (element) => {
   saveCartID(idProductCart);
 };
 
-buttonAddCar.addEventListener('click', addCart);
-
 function recoverCart() {
   const storage = getSavedCartIDs();
   storage.forEach(async (ids) => {
@@ -56,7 +54,19 @@ function recoverCart() {
     cartList.appendChild(listCartStorege);
   });
 }
+
+const subTotalPrice = async () => {
+  const products = getSavedCartIDs() || 0;
+  const promises = [];
+  products.forEach(async (item) => promises.push(fetchProduct(item)));
+  const result = await Promise.all(promises);
+  const total = result.reduce((acc, curr) => acc + curr.price, 0);
+  document.querySelector('.total-price').innerText = total.toFixed(2);
+};
+
 window.onload = () => {
+  buttonAddCar.addEventListener('click', addCart);
   productList();
   recoverCart();
+  subTotalPrice();
 };
