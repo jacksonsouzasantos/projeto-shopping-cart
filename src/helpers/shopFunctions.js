@@ -1,4 +1,5 @@
-import { removeCartID } from './cartFunctions';
+import { removeCartID, saveCartID } from './cartFunctions';
+import { fetchProduct } from './fetchFunctions';
 
 // Esses comentários que estão antes de cada uma das funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições!
@@ -39,6 +40,18 @@ export const createCustomElement = (element, className, innerText = '') => {
 export const getIdFromProduct = (product) => (
   product.querySelector('span.product__id').innerText
 );
+// Função que realiza a soma dos elementos adicionados ao carrinho.
+const sumProduts = () => {
+  const cartProducts = document.querySelectorAll('.cart__product');
+  const sum = Array.from(cartProducts).reduce((acc, product) => {
+    const price = product.querySelector('.product__price__value').innerText;
+    return acc + Number(price);
+  }, 0);
+  const sumPrice = document.querySelector('.total-price');
+  sumPrice.innerText = sum;
+};
+const saveSumProducts = () => localStorage
+  .setItem('sumProducts', document.querySelector('.total-price').innerText);
 
 /**
  * Função que remove o produto do carrinho.
@@ -48,6 +61,8 @@ export const getIdFromProduct = (product) => (
 const removeCartProduct = (li, id) => {
   li.remove();
   removeCartID(id);
+  sumProduts();
+  saveSumProducts();
 };
 
 /**
@@ -91,6 +106,16 @@ export const createCartProductElement = ({ id, title, price, pictures }) => {
   return li;
 };
 
+const addToCart = async (event) => {
+  const id = getIdFromProduct(event.target.parentElement);
+  const product = await fetchProduct(id);
+  const cart = document.querySelector('.cart__products');
+  cart.appendChild(createCartProductElement(product));
+  sumProduts();
+  saveCartID(id);
+  saveSumProducts();
+};
+
 /**
  * Função responsável por criar e retornar o elemento do produto.
  * @param {Object} product - Objeto do produto.
@@ -121,7 +146,7 @@ export const createProductElement = ({ id, title, thumbnail, price }) => {
     'product__add',
     'Adicionar ao carrinho!',
   );
+  cartButton.addEventListener('click', addToCart);
   section.appendChild(cartButton);
-
   return section;
 };
