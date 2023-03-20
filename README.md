@@ -27,7 +27,7 @@
 
 ### visite o projeto em:
 
-Solar System: 
+Carrinho de Compras: https://shopping-cart-five-gamma.vercel.app/
 
 
 <!-- Sobre o Projeto -->
@@ -159,6 +159,12 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 [Daniel Cintori]https://github.com/danielcintori. estrutura de função para somar os produdos</br>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Observações
+
+[Correção] Atualizar botão de adicionar. Acontece uma duplicação quando o usuário executa o click, leva o mesmo item duas vezes para o carrinho.</br>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
